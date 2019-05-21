@@ -1,68 +1,162 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ConSearch</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+    <style>
+        /*  Color Theme:
+            #BFB8A3
+            #F2B28D
+            #BF5F56 
+            #F25E5E
+            #0D0D0D 
+        */
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            background: #BFB8A3;
+            /*background: linear-gradient(180deg, rgba(119,189,217,1) 0%, rgba(30,164,217,1) 100%);*/
+            height: 100%;
+            margin: 0;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        h1 {
+            color: #F25E5E;
+            font-size: 66px;
+        }
+
+        #artist-form {
+            text-align: center;
+        }
+
+        .form-label {
+            color: #0D0D0D;
+            font-size: 36px;
+        }
+
+        #artist-input {
+            height: auto;
+            border: none;
+            border-radius: 9999px;
+            outline: none;
+            margin: 0px 30px;
+            padding: 10px 18px;
+            position: relative;
+            bottom: 6px;
+            background-color: transparent;
+            border: 4px solid #0D0D0D;
+            color: #0D0D0D;
+            font-size: 22px;
+        }
+
+        #select-artist {
+            margin: 30px;
+            font-size: 28px;
+            padding: 10px 30px;
+            border-radius: 999px;
+            color: #BFB8A3;
+            background: #F25E5E;
+            outline: none;
+            border: none;
+        }
+
+        #artist-div {
+            text-align: center;
+        }
+
+        #name {
+            text-decoration: none;
+            color: #BF5F56;
+        }
+
+        img {
+            border-radius: 26px;
+        }
+
+        #artist-link {
+            text-decoration-color: #0D0D0D;
+            color: #0D0D0D;
+        }
+
+        #space {
+            height: 40px;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
+    
+    <h1 style="text-align: center;">ConSearch</h1>
 
-    <h1 style="font-size: 42px; text-align: center;">ConSearch</h1>
-
-    <!--Artists Select Box-->
+    <!-- Artist Select Box -->
     <form id="artist-form">
 
-        <!--Label for Text Box-->
-        <label for="artist-input">Choose Your Artist</label>
+        <!-- Label for Text Box -->
+        <label for="artist-input" class="form-label">Search Your Artist</label>
 
-        <!--Text input box-->
+        <!-- Text Input Box -->
         <input type="text" id="artist-input"><br>
 
-        <!--Submint Button-->
+        <!-- Submit Button -->
         <input id="select-artist" type="submit" value="Search">
 
     </form>
 
-    <!--Artist Information-->
+    <!-- Artist Information -->
     <div id="artist-div"></div>
+
 </body>
 
 <script
   src="https://code.jquery.com/jquery-3.4.1.min.js"
   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous">
-</script>
+  crossorigin="anonymous"></script>
 
 <script>
-
-    function searchBandsInTown(artist) {
-        // Quering the bandsintown api for the selected artist,
-        // the ?api parameter is required, but can equal anything
-        var queryURL = "https://rest.bandsintown.com/artists/" + artist + "?api_id=codingbootcamp";
+    
+    function searchBandsInTown(artist)
+    {
+        // Querying the bandsintown api for the selected artist, the 
+        // ?app_id parameter is required, but can equal anything
+        var queryURL = "https://rest.bandsintown.com/artists/" + artist + "?app_id=codingbootcamp";
         $.ajax({
+
             url: queryURL,
-            method: "Get"
+            method: "GET"
+
         }).done(function(response) {
-            //printing the entire objecct to console
+
+            // Printing the entire object to console
             console.log(response);
 
-            //Constructing HTML containing the artist information
+            // Constructing HTML containing the artist information
             var artistName = $("<h1>").text(response.name);
-            var artistUrl = $("<a>").attr("href", response.url).append(artistName);
+            var artistUrl = $("<a>").attr({"href": response.url, "id": "name"}).append(artistName);
             var artistImage = $("<img>").attr("src", response.thumb_url);
-            var trackerCount = $("<h2>").text(response.tracker_count + " fans traking this artist");
+            var trackerCount = $("<h2>").text(response.tracker_count + " fans tracking this artist");
             var upcomingEvents = $("<h2>").text(response.upcoming_event_count + " upcoming events");
-            var goToArtist = $("<a>").attr("href", response.url).text("See Tour Dates");
+            var goToArtist = $("<a>").attr({"href": response.url, "id": "artist-link"}).text("See Tour Dates");
 
-            //Empty artist_div
+            // Empty the contents of the artist-div, append the new artist content
             $("#artist-div").empty();
             $("#artist-div").append(artistUrl, artistImage, trackerCount, upcomingEvents, goToArtist);
-        })
-    };
+      
+        });
+    }
 
-    // Event Handler
+    // Event handler for user clicking the select-artist button
     $("#select-artist").on("click", function(event) {
+
         // Preventing the button from trying to submit the form
         event.preventDefault();
 
@@ -71,7 +165,9 @@
 
         // Running the searchBandsInTown function (passing in the artist as an argument)
         searchBandsInTown(artist);
-    }
+
+    });
 
 </script>
+
 </html>
